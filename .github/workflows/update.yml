@@ -1,0 +1,41 @@
+name: Auto Update Mappings
+
+on:
+  schedule:
+    # Runs every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: uses/actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Automation Script
+        env:
+          KEY: ${{ secrets.TMDB_API_KEY }}
+        run: node automate.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/ last.json
+          git status
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Auto-update mappings [$(date +'%Y-%m-%d %H:%M')]" && git push)

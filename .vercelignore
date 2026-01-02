@@ -1,0 +1,26 @@
+# Ignore unnecessary files for Vercel deployment
+node_modules
+.git
+.gitignore
+out.txt
+*.log
+
+# Don't upload these large directories (they're not needed for the API)
+pages/
+tmdb/
+
+# Keep only the essential mapping data
+!data/
+
+# Development files
+.env
+last.json
+
+# Scripts not needed for API
+main.js
+parse.js
+update.sh
+
+# Documentation (optional, can include if you want)
+# README.md
+# DEPLOYMENT.md
